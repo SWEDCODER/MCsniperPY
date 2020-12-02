@@ -4,6 +4,6 @@ skin_model:slim
 change_skin:false
 snipe_reqs:8
 block_reqs:3
-auth_delay:500
+auth_delay:1000
 max_accs:30
 auto_link_namemc:false NOT IMPLEMENTED

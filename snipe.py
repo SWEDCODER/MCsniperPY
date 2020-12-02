@@ -218,7 +218,8 @@ class Account:
                             custom_info(f"{self.email} is unpaid and cannot snipe names. {Fore.RED}YOU ARE SNIPING. This will fail.{Fore.RESET}")
                 self.auth = {"Authorization": "Bearer: " + resp_json["accessToken"]}
                 self.access_token = resp_json["accessToken"]
-                print(self.access_token)
+                if not resp_json["accessToken"]:
+                    self.failed_auth = True
             else:
                 resp_error(f"invalid credentials | {self.email}")
                 self.failed_auth = True
@@ -273,8 +274,8 @@ class Account:
                     asyncio.get_event_loop().stop()
                 else:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}fail{Fore.WHITE}] {Fore.RED} {response.status} {Fore.WHITE}@{Fore.CYAN} {now}{Fore.RESET}")
-        except AttributeError:
-            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe!')
+        except AttributeError as e:
+            print(f'{Fore.WHITE}[{Fore.RED}error{Fore.WHITE}]{Fore.RESET} {self.email} failed authentication and cannot snipe! Error {e}')
 
     def webhook_skin_write_file(self, block_snipe):
         time.sleep(1)
@@ -383,7 +384,7 @@ class session:
         loop = asyncio.get_event_loop()
         self.drop_time = loop.run_until_complete(time_snipe(self.target_username, self.block_snipe))
         try:
-            self.setup_time = self.drop_time - 55
+            self.setup_time = self.drop_time - 100
         except Exception:
             resp_error(f"Cannot snipe name {target_username}")
             time.sleep(2)
@@ -421,7 +422,7 @@ class session:
                 loop.run_until_complete(self.run_auth())
                 for acc in accounts:
                     if acc.failed_auth:
-                        logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
+                        #logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] Removing account: {acc.email} | auth failed")
                         accounts.remove(acc)
                 if len(accounts) == 0:
                     logging.info(f"{Fore.WHITE}[{Fore.RED}ERROR{Fore.WHITE}] you have 0 accounts available to snipe on! | quitting program...")
